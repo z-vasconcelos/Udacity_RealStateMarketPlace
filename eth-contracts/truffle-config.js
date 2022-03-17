@@ -1,3 +1,6 @@
+//var HDWalletProvider = require("@truffle/hdwallet-provider");
+//var mnemonic = "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat";
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
