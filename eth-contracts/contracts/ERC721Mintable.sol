@@ -558,8 +558,8 @@ contract ERC721Metadata is ERC721Enumerable, usingOraclize {
     function setTokenURI (uint256 tokenId, string memory tokenUri) internal returns (string memory) {
         require(_exists(tokenId), "This token does not exists");
         //_tokenURIs[tokenId] = strConcat(_baseTokenURI, tokenUri, uint2str(tokenId));
-        //removed tokenID. With this the URI will be what is received through the call
-        _tokenURIs[tokenId] = strConcat(_baseTokenURI, tokenUri);
+        //remove tokenID? This could be sent as part of the URI 
+        _tokenURIs[tokenId] = strConcat(_baseTokenURI, tokenUri, uint2str(tokenId));
     }
 }
 
@@ -580,9 +580,9 @@ contract ERC721Mintable is ERC721Metadata {
     //      -calls the superclass mint and setTokenURI functions
 
     //What to do with tokenURI? The function setTokenURI asks for the _baseTokenURI
-    function _mint(address to, uint256 tokenId, string memory tokenURI) onlyOwner public returns(bool){
+    function _mint(address to, uint256 tokenId, string memory tokenUri) onlyOwner public returns(bool){
         super._mint(to, tokenId);
-        super.setTokenURI(tokenId, tokenURI);
+        super.setTokenURI(tokenId, tokenUri);
 
         //if not reverted above, returns true
         return(true);
