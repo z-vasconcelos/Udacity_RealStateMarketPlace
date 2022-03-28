@@ -2,11 +2,12 @@
 //var SquareVerifier = artifacts.require("./SquareVerifier.sol");
 var Verifier = artifacts.require("./Verifier.sol");
 var SolnSquareVerifier = artifacts.require("./SolnSquareVerifier.sol");
-var MintableContract = artifacts.require("./ERC721Mintable.sol");
+//var MintableContract = artifacts.require("./ERC721MintableComplete.sol");
+//var baseUri = "https://gateway.pinata.cloud/ipfs/"
+var baseUri = "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/"
 
 module.exports = function(deployer) {
-  //deployer.deploy(SquareVerifier);
-  //deployer.deploy(Verifier);
-  //deployer.deploy(SolnSquareVerifier);
-  deployer.deploy(MintableContract, "ThiIsTheRealSate", "RSM", "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/");
+  deployer.deploy(Verifier).then(() => {
+    deployer.deploy(SolnSquareVerifier, "ThiIsTheRealSate", "RSM", baseUri, Verifier.address);
+  });
 };

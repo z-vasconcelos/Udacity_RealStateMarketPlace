@@ -5,17 +5,37 @@
   "main": "index.js",
   "scripts": {
     "dev": "lite-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dapp": "webpack-dev-server --mode development --config webpack.config.js"
   },
   "keywords": [],
   "author": "pk <pkrasam@gmail.com> (https://ipfs.infura.io/ipfs/QmSXiR9Khm3yo1J67nUopvVBxFJ8YGN2fUGZ34Etr3m92x/)",
   "license": "MIT",
   "devDependencies": {
-    "lite-server": "^2.6.1"
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.4",
+    "html-loader": "^3.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "lite-server": "^2.6.1",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@truffle/hdwallet-provider": "^2.0.4",
+    "assert": "^2.0.0",
+    "babel-polyfill": "^6.26.0",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
     "openzeppelin-solidity": "^2.2.0",
+    "os-browserify": "^0.3.0",
     "solc": "^0.5.2",
-    "solc-js": "^0.5.2"
+    "solc-js": "^0.5.2",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0",
+    "web3": "^1.7.1"
   }
 }

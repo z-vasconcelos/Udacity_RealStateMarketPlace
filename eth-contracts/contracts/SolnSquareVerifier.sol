@@ -1,15 +1,18 @@
 pragma solidity >=0.4.21 <0.6.0;
 
-import "./ERC721Mintable.sol";
-
-// TODO define a contract call to the zokrates generated solidity contract <Verifier> or <renamedVerifier>
-//Verifier content https://classroom.udacity.com/nanodegrees/nd1309/parts/fa681527-1a61-4757-b8a1-4c6419887878/modules/65842110-9cfb-4fd9-9198-67b181c9cd89/lessons/5146574d-6371-419a-ad2f-27906701bc5b/concepts/81b69f44-8a11-401f-a82e-7e0f96a48ba5
+import "./ERC721MintableComplete.sol";
 import "./Verifier.sol";
 
 // TODO define another contract named SolnSquareVerifier that inherits from your ERC721Mintable class
-contract SolnSquareVerifier is ERC721Mintable {
+contract SolnSquareVerifier is ERC721MintableComplete {
 
     Verifier verifier;
+
+    constructor(string memory name, string memory symbol, string memory baseTokenURI, address verifierAddress) 
+                                    ERC721MintableComplete(name, symbol, baseTokenURI) public 
+    {
+        verifier = Verifier(verifierAddress);
+    }    
 
     // TODO define a solutions struct that can hold an index & an address
     struct Solution {
@@ -35,16 +38,25 @@ contract SolnSquareVerifier is ERC721Mintable {
 
     // TODO Create a function to add the solutions to the array and emit the event
     //https://zokrates.github.io/examples/sha256example.html?highlight=verifyTx#prove-knowledge-of-pre-image
+
+    //bkp parameters
+    // uint[2] memory a,
+    // uint[2] memory a_p,
+    // uint[2][2] memory b,
+    // uint[2] memory b_p,
+    // uint[2] memory c,
+    // uint[2] memory c_p,
+    // uint[2] memory h,
+    // uint[2] memory k,
+    // uint[2] memory input,
+    // address solAddress,
+    // uint256 tokenId
+
     function addSolution 
                         (
                             uint[2] memory a,
-                            uint[2] memory a_p,
                             uint[2][2] memory b,
-                            uint[2] memory b_p,
                             uint[2] memory c,
-                            uint[2] memory c_p,
-                            uint[2] memory h,
-                            uint[2] memory k,
                             uint[2] memory input,
                             address solAddress,
                             uint256 tokenId
@@ -59,7 +71,8 @@ contract SolnSquareVerifier is ERC721Mintable {
         require(!solutionsKeys[tokenId].isKeyValid, "This tokenId has already been solved");
 
         //Try to solve
-        bool isVerified = verifier.verifyTx(a, a_p, b, b_p, c, c_p, h, k, input);
+        //bool isVerified = verifier.verifyTx(a, a_p, b, b_p, c, c_p, h, k, input);
+        bool isVerified = verifier.verifyTx(a, b, c, input);
         require(isVerified, "The verification has failed");        
 
         solutions[solutionKey] = Solution ({
@@ -75,6 +88,32 @@ contract SolnSquareVerifier is ERC721Mintable {
         });
 
         emit SolutionAdded(tokenId, solAddress);
+    }
+
+    function hasSolution (
+                        uint[2] memory a,
+                        uint[2][2] memory b,
+                        uint[2] memory c,
+                        uint[2] memory input
+                        )
+                        public
+                        view
+                        returns (bool) {
+        bytes32 solutionKey = keccak256(abi.encodePacked(a, b, c, input));
+        return(solutions[solutionKey].hasSolution);
+    }
+
+    function getSolutionInfo (
+                        uint[2] memory a,
+                        uint[2][2] memory b,
+                        uint[2] memory c,
+                        uint[2] memory input
+                        )
+                        public
+                        view
+                        returns (bool solution, uint256 id, address solAddress, bool mint) {
+        bytes32 solutionKey = keccak256(abi.encodePacked(a, b, c, input));
+        return(solutions[solutionKey].hasSolution, solutions[solutionKey].index, solutions[solutionKey].solutionAddress, solutions[solutionKey].isMinted);
     }
 
     // TODO Create a function to mint new NFT only after the solution has been verified

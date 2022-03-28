@@ -1,5 +1,5 @@
-//var ERC721MintableComplete = artifacts.require('ERC721MintableComplete');
-var ERC721MintableComplete = artifacts.require('ERC721Mintable');
+var ERC721MintableComplete = artifacts.require('SolnSquareVerifier');
+var Verifier = artifacts.require('Verifier');
 
 contract('TestERC721Mintable', accounts => {
 
@@ -10,23 +10,21 @@ contract('TestERC721Mintable', accounts => {
     const mintableContractSymbol = "ARSM";
     //const mintableContractBaseTokenURI = "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/";
 
-    //Img exposed in google drive. It generates random IDs, mapped them here
-    //ex complete uri: https://drive.google.com/uc?id=1buU9Sx5SMa2xBKyYLwWkT9Cj9SYaUM3f
-    //It would be simpler to upload it in an ipfs. I wanted to use Pinata, but I am getting error to access the site. For praticity, used google drive
-    
-    //To Do
     //Used a pinned cid from pinata to hold the images
     const mintableContractBaseTokenURI = "https://gateway.pinata.cloud/ipfs/";
     const tokenUri = "QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
-
+    //const completeTokenUri = "https://gateway.pinata.cloud/ipfs/QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
+    
     let amountOfNft = 10;
 
     describe('match erc721 spec', function () {
         beforeEach(async function () { 
+            let VerifierContract = await Verifier.new({from: account_one});
             this.contract = await ERC721MintableComplete.new(
                                                             mintableContractName,
                                                             mintableContractSymbol,
                                                             mintableContractBaseTokenURI,
+                                                            VerifierContract.address,
                                                             {from: account_one}
                                                             );
 

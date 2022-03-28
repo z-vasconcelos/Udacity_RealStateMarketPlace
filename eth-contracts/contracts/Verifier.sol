@@ -4,7 +4,10 @@
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-pragma solidity ^0.8.0;
+//pragma solidity ^0.8.0;
+//pragma experimental ABIEncoderV2;
+pragma solidity >=0.4.21 <0.6.0;
+
 library Pairing {
     struct G1Point {
         uint X;
@@ -15,6 +18,7 @@ library Pairing {
         uint[2] X;
         uint[2] Y;
     }
+
     /// @return the generator of G1
     function P1() pure internal returns (G1Point memory) {
         return G1Point(1, 2);
@@ -152,11 +156,23 @@ contract Verifier {
         Pairing.G2Point delta;
         Pairing.G1Point[] gamma_abc;
     }
+    
+    //Adapted Proof from
+    ////Code from Verifier from this page
+    //https://classroom.udacity.com/nanodegrees/nd1309/parts/fa681527-1a61-4757-b8a1-4c6419887878/modules/65842110-9cfb-4fd9-9198-67b181c9cd89/lessons/5146574d-6371-419a-ad2f-27906701bc5b/concepts/81b69f44-8a11-401f-a82e-7e0f96a48ba5
     struct Proof {
         Pairing.G1Point a;
+        Pairing.G1Point a_p;
         Pairing.G2Point b;
+        Pairing.G1Point b_p;
         Pairing.G1Point c;
+        Pairing.G1Point c_p;
+        Pairing.G1Point k;
+        Pairing.G1Point h;
     }
+
+    event Verified(string message);
+
     function verifyingKey() pure internal returns (VerifyingKey memory vk) {
         vk.alpha = Pairing.G1Point(uint256(0x2366f514f5076bff334c5d161e6ce11157f6ea1ec173b5133233fbe49b2e6ba3), uint256(0x2b8eb113e2616584f440f229b03863ba098e669d223839a67db233a8cf1571d1));
         vk.beta = Pairing.G2Point([uint256(0x27e4ac1e4fdc1447e8b3c0e9cddfda700a95e3b484bf91a8f2360e2992484ccd), uint256(0x26e51258d4eda3022c38894303ad8e09bbf118bc8e2ec0f6b2426cf7ff5fac80)], [uint256(0x10087ea54acea15d576248545b08c40b101e32f1dfa1e986f272ab5a2f2d0050), uint256(0x1ef9cdb9af1f76bcb98ebe73977c1128d6fd149823122e0bf619c4e0436eb180)]);
@@ -185,18 +201,59 @@ contract Verifier {
              Pairing.negate(vk.alpha), vk.beta)) return 1;
         return 0;
     }
-    function verifyTx(
-            Proof memory proof, uint[2] memory input
-        ) public view returns (bool r) {
-        uint[] memory inputValues = new uint[](2);
+
+    //Replaced this one to simplify solnSquareVerifier and to avoid using experimental abiEncoder
+    // function verifyTx( 
+    //                     Proof memory proof,
+    //                     uint[2] memory input
+    //                 )
+    //                 public view returns (bool r) {
+    //     uint[] memory inputValues = new uint[](2);
         
-        for(uint i = 0; i < input.length; i++){
-            inputValues[i] = input[i];
+    //     for(uint i = 0; i < input.length; i++){
+    //         inputValues[i] = input[i];
+    //     }
+    //     if (verify(inputValues, proof) == 0) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    //Code from Verifier from this page
+    //https://classroom.udacity.com/nanodegrees/nd1309/parts/fa681527-1a61-4757-b8a1-4c6419887878/modules/65842110-9cfb-4fd9-9198-67b181c9cd89/lessons/5146574d-6371-419a-ad2f-27906701bc5b/concepts/81b69f44-8a11-401f-a82e-7e0f96a48ba5
+    function verifyTx(
+                        uint[2] memory a,
+                        //uint[2] memory a_p,
+                        uint[2][2] memory b,
+                        //uint[2] memory b_p,
+                        uint[2] memory c,
+                        //uint[2] memory c_p,
+                        //uint[2] memory h,
+                        //uint[2] memory k,
+                        uint[2] memory input
+                        )
+                        public
+                        returns (bool r) 
+        {
+            Proof memory proof;
+            proof.a = Pairing.G1Point(a[0], a[1]);
+            //proof.a_p = Pairing.G1Point(a_p[0], a_p[1]);
+            proof.b = Pairing.G2Point([b[0][0], b[0][1]], [b[1][0], b[1][1]]);
+            //proof.b_p = Pairing.G1Point(b_p[0], b_p[1]);
+            proof.c = Pairing.G1Point(c[0], c[1]);
+            //proof.c_p = Pairing.G1Point(c_p[0], c_p[1]);
+            //proof.h = Pairing.G1Point(h[0], h[1]);
+            //proof.k = Pairing.G1Point(k[0], k[1]);
+            uint[] memory inputValues = new uint[](input.length);
+            for(uint i = 0; i < input.length; i++){
+                inputValues[i] = input[i];
+            }
+            if (verify(inputValues, proof) == 0) {
+                emit Verified("Transaction successfully verified.");
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (verify(inputValues, proof) == 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
