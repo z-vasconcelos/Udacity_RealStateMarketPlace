@@ -2,14 +2,14 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: ['babel-polyfill', path.join(__dirname, "src")],
+  entry: ['babel-polyfill', path.join(__dirname, "dapp")],
   output: {
     path: path.join(__dirname, "prod/dapp"),
     filename: "bundle.js"
   },
   module: {
     rules: [
-      {
+    {
         test: /\.(js|jsx)$/,
         use: "babel-loader",
         exclude: /node_modules/
@@ -33,38 +33,15 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({ 
-      template: path.join(__dirname, "src/index.html")
+      template: path.join(__dirname, "dapp/index.html")
     })
   ],
   resolve: {
-    extensions: [".js"],
-    fallback: { 
-      "stream": require.resolve("stream-browserify"),
-      "crypto": false,
-      "assert": require.resolve("assert/"),
-      "https": require.resolve("https-browserify"),
-      "os": require.resolve("os-browserify/browser"),
-      "http": require.resolve("stream-http")
-    }
+    extensions: [".js"]
   },
-  // devServer: {
-  //   contentBase: path.join(__dirname, "dapp"),
-  //   port: 8000,
-  //   stats: "minimal"
-  // } 
   devServer: {
-    // contentBase
-    static : {
-      directory : path.join(__dirname, "src/")
-    },
+    contentBase: path.join(__dirname, "dapp"),
     port: 8000,
-    // publicPath
-    // devMiddleware:{
-    //    publicPath: "http://localhost:3001/",
-    // },
-    // hotOnly
-    hot: "only",
+    stats: "minimal"
   }
-  
 };
-

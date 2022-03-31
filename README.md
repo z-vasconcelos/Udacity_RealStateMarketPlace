@@ -129,7 +129,12 @@ truffle test ./test/TestSolnSquareVerifier.js
 ## Deployment
 - [ ] Deploy ERC721 contracts with Zokrates integration.
 
-* obs: npm install @truffle/hdwallet-provider
+* obs:
+Infura with hdWallet
+npm install @truffle/hdwallet-provider
+
+run web application
+npm install webpack-dev-server -g
 
 Pinata
 Verifier Contract Address

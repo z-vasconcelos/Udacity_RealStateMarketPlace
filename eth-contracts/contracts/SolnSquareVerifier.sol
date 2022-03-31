@@ -68,7 +68,7 @@ contract SolnSquareVerifier is ERC721MintableComplete {
         
         //check if solution already exists
         require(!solutions[solutionKey].hasSolution, "A Solution has already been generated");
-        require(!solutionsKeys[tokenId].isKeyValid, "This tokenId has already been solved");
+        require(!solutionsKeys[tokenId].isKeyValid, "This tokenId has already been solved. Generate a new solution with Zokrates");
 
         //Try to solve
         //bool isVerified = verifier.verifyTx(a, a_p, b, b_p, c, c_p, h, k, input);
