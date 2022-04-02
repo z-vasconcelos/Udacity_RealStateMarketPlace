@@ -32,18 +32,18 @@
       <h5>Real State MarketPlace</h5>
 
       <p>In this project you will be minting your own tokens to represent your title to the properties.
-        Before you mint a token, you need to verify you own the property.
-        You will use zk-SNARKs to create a verification system which can prove you have title to the property
-        without revealing that specific information on the property. We covered the basics on zk-SNARKs
-        in Privacy lesson in Course 5</p>
+        Before you mint a token, you need to verify you own the property.</p>
+      <p>zk-SNARKs was used to create a verification system which can prove you have title to the property
+        without revealing that specific information on the property. Now follow the steps to proove you are the
+        owner of the property and then mint you token</p>
       
       <!-- start checkIfProofWasUsed -->
       <div id="proof-status">
         <div class="row mt-4">
-          <div class="col-8">
-            <label for="bt-check-id-has-proof">Check if provided proof was already used:</label>
+          <div class="col-12">
+            <label for="bt-check-id-has-proof">Check if the provided proof was already used:</label><spam id="has-proof"></spam>
           </div>
-          <div class="col-8">
+          <div class="col-12">
             <button id="bt-check-id-has-proof" class="btn btn-primary mt-2">Check If Id Has Proof</button>
           </div>
         </div>
@@ -51,7 +51,7 @@
         <div class="row mt-3">
           <div id="ta-output-validation" class="form-group d-none">
             <label for="output-info-from-validation">Output Information</label>
-            <textarea class="form-control" id="output-info-from-validation" rows="3"></textarea>
+            <textarea class="form-control" id="output-info-from-validation" rows="2"></textarea>
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@
       </div>
       <div class="row top-20">
         <div class="col-12 v-align">
-          <button id="connect-metamsk" class="enableEthereumButton btn btn-warning mt-1">Connect MetaMask</button>
+          <button id="connect-metamsk" class="enableEthereumButton btn btn-success mt-1">Connect MetaMask</button>
         </div>
       </div>
       <!-- end connectMetamask -->
@@ -77,11 +77,11 @@
       
       <!-- start AddSolution -->
       <div class="row mt-4">
-          <div class="col-8">
+          <div class="col-12">
             <label class="form">Account to Validate and Add a Solution</label>
             <input type="text" id="ipt-account-validate" style="width: 100%;" placeholder="Your Account">
           </div>
-          <div class="col-4">
+          <div class="col-12">
             <label class="form">Token ID</label>
             <input type="text" id="ipt-token-validate" style="width: 100%;" placeholder="Token Id">
           </div>
@@ -97,21 +97,56 @@
 
       <!-- start Mint -->
       <div class="row mt-4">
-        <div class="col-8">
-          <label class="form">Mint to Address</label>
-          <input type="text" id="ipt-account-validate" style="width: 100%;" placeholder="Address to Receive Minted Token">
+        <div class="col-12">
+          <label class="form">Mint Address</label>
+          <input type="text" id="ipt-mint-to-address" style="width: 100%;" placeholder="Address to Mint - Filled clicking in 'Connect MetaMask' " readonly>
         </div>
-        <div class="col-4">
+        <div class="col-12">
           <label class="form">Token ID</label>
-          <input type="text" id="ipt-token-validate" style="width: 100%;" placeholder="Token Id">
+          <input type="text" id="ipt-token-mint" style="width: 100%;" placeholder="Token Id">
         </div>
       </div>
       <div class="row mt-3">
         <div class="col-4">
-          <button id="bt-check-proof" class="btn btn-primary">Mint</button>
+          <button id="bt-mint-token" class="btn btn-primary">Mint</button>
         </div>
       </div>
       <!-- end Mint -->
+
+      <hr class="mt-4"> 
+
+      <h4>Debug / Retrieve Contract Info</h4>
+
+      <!-- start Get Token Info -->
+      <div class="row mt-3">
+      <div class="col-12">
+        <button id="bt-get-token-info" class="btn btn-primary">Get Token Info</button>
+        <spam style="margin-left: 1rem" id="token-info-output"></spam>
+      </div>
+      </div>
+      <!-- start Get Token Info -->
+
+      <!-- start Get Token Uri -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <label class="form">Token ID</label>
+          <input type="text" id="ipt-get-uri-tokenid" style="width: 100%;" placeholder="Token Id">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12">
+          <button id="bt-get-token-uri" class="btn btn-primary">Get Token Uri</button>
+        </div>
+        <div class="col-12 mt-3">
+          <spam id="token-base-uri"></spam>
+        </div>
+        <div class="col-12 mt-3">
+          <spam id="token-uri"></spam>
+        </div>
+      </div>
+      <!-- end Get Token Uri -->
+
+      <hr class="mt-4"> 
 
     </br></br></br>
     </div>

@@ -9,12 +9,12 @@ contract ('TestSquareVerifier', accounts => {
 
     const mintableContractName = "AlmostRealState";
     const mintableContractSymbol = "ARSM";
-    //const mintableContractBaseTokenURI = "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/";
+    const mintableContractBaseTokenURI = "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/";
 
     //Used a pinned cid from pinata to hold the images
-    const mintableContractBaseTokenURI = "https://gateway.pinata.cloud/ipfs/";
-    const tokenUri = "QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
-    const completeTokenUri = "https://gateway.pinata.cloud/ipfs/QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
+    //const mintableContractBaseTokenURI = "https://gateway.pinata.cloud/ipfs/";
+    //const tokenUri = "QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
+    //const completeTokenUri = "https://gateway.pinata.cloud/ipfs/QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
 
     describe('Test for SolnSquareVerifier', function () {
         beforeEach(async function () { 
@@ -22,7 +22,7 @@ contract ('TestSquareVerifier', accounts => {
             this.contract = await ERC721MintableComplete.new(
                                                             mintableContractName,
                                                             mintableContractSymbol,
-                                                            completeTokenUri,
+                                                            mintableContractBaseTokenURI,
                                                             VerifierContract.address,
                                                             {from: account_one}
             );

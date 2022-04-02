@@ -1,7 +1,6 @@
 {
 	"localhost": {
-		"url": "https://rinkeby.infura.io/v3/49535578bd2a4264bc5ab9bd83e6c993",
-		"mintableAddress": "0x1f8A40FCfe429c5FA6dcF96EbB907a09ec196918",
-		"verifierAddress": "0x9B3C68A2dA2C865800bCB340E072C36c540864C1"
+		"mintableAddress": "0xF0c827dFb2c559dFecE87842B545dEe358BFdE78",
+		"verifierAddress": "0xBfefea67Afb68107C46dBDd38845E1EB71DC18d8"
 	}
 }

@@ -107,10 +107,39 @@ truffle test ./test/TestSquareVerifier.js
 truffle test ./test/TestSolnSquareVerifier.js
 ```
 
+# Functional Tests with Rinkeby
+
+To use the interface to Validate Proof and Mint, follow these steps
+1. create a .env file at the base folder of the project
+2. Add at .env your infura key in the format shown bellow (without quotes)
+3. Add at .env your mnemonic in the format shown bellow (inside quotes)
+
+```
+INFURA_PROJECT_ID=Your id here
+MNEMONIC="you mnemonic"
+```
+
+Then, run Dapp
+```
+npm run dapp
+```
+Access http://localhost:8000/ at your browser
+
+You will access:
+
+![Alt text](img/udct_realStateDapp.png?raw=true "localhost Dapp")
+
+In this page you can
+1. Check if the proof is already used and get information about it
+2. Connect a metamask wallet to make the validation and minting and use it ro sign the transactions
+3. Submit a Solution
+4. Mint a token
+5. Get information about the token and metadata urls
+
 # Project Rubrics
 ## Project Deliverables
 - [x] Includes a README to explain how to test their code
-- [ ] Provides Contract Addresses, Contract Abi's, OpenSea MarketPlace Storefront link's
+- [X] Provides Contract Addresses, Contract Abi's, OpenSea MarketPlace Storefront link's
 
 ## ERC721
 - [x] Complete the boilerplate ERC721 Mintable Contract in 'ERC721Mintable.sol'
@@ -124,34 +153,35 @@ truffle test ./test/TestSolnSquareVerifier.js
 - [x] Write and pass the test cases in 'TestSolnSquareVerifier.js'
 
 ## OpenSea Marketplace
-- [ ] List ERC721/ ZoKrates tokens & complete transactions on market place
+- [X] List ERC721/ ZoKrates tokens & complete transactions on market place
 
 ## Deployment
-- [ ] Deploy ERC721 contracts with Zokrates integration.
+- [X] Deploy ERC721 contracts with Zokrates integration.
 
-* obs:
-Infura with hdWallet
-npm install @truffle/hdwallet-provider
+# Contract Information
 
-run web application
-npm install webpack-dev-server -g
+## Verifier Transaction and Contract Address:
 
-Pinata
-Verifier Contract Address
-0x9B3C68A2dA2C865800bCB340E072C36c540864C1
-The ABI from this contract can be found inside this project at folder eth-contracts/repository/abi
+### Transaction
+* 0x1aa9a8f0a46c86fecb6700d14b82bbe24bc7bfb92eca9d2f59815ebfaff35318  
+https://rinkeby.etherscan.io/tx/0x1aa9a8f0a46c86fecb6700d14b82bbe24bc7bfb92eca9d2f59815ebfaff35318
 
-SolnSquareVerifier Transaction Hash
-0x372a96215a05d9222cab44b29afc27f144d4a0cde41f808232f2cf54d782f4e8
-SolnSquareVerifier Contract Address
-0x43e180ceA558D1C313363C8524588A5C67ae5bd0
+### Contract
+* 0xBfefea67Afb68107C46dBDd38845E1EB71DC18d8  
+https://rinkeby.etherscan.io/address/0xBfefea67Afb68107C46dBDd38845E1EB71DC18d8
 
-standard
-0x25c12e010deC5207b199c7a4bd2Ba0C6FE851287
-Verifier Contract Address
-0x9B3C68A2dA2C865800bCB340E072C36c540864C1
+## Mintable Transaction and Contract Address:
 
-SolnSquareVerifier Transaction Hash
-0x96c5d7f0d722a933d75ca0fd12d9d63aea5fd8d1dec4f55422c37531bea16b7d
-SolnSquareVerifier Contract Address
-0x1f8A40FCfe429c5FA6dcF96EbB907a09ec196918
+### Transaction
+* 0xa3a42b2d8c2ff69037b5b146f311ecd0c656873b1d3f8c20e72981c4e9a9a14d  
+https://rinkeby.etherscan.io/tx/0xa3a42b2d8c2ff69037b5b146f311ecd0c656873b1d3f8c20e72981c4e9a9a14d
+
+### Contract
+* 0xF0c827dFb2c559dFecE87842B545dEe358BFdE78  
+https://rinkeby.etherscan.io/address/0xF0c827dFb2c559dFecE87842B545dEe358BFdE78
+
+# OpenSea Collection
+https://testnets.opensea.io/collection/thiistherealsate
+
+# Contract ABIs
+The ABIs are available at folder "eth-contracts/build"

@@ -8,11 +8,12 @@ contract('TestERC721Mintable', accounts => {
 
     const mintableContractName = "AlmostRealState";
     const mintableContractSymbol = "ARSM";
-    //const mintableContractBaseTokenURI = "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/";
+    const mintableContractBaseTokenURI = "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/";
+    const tokenUri = "";
 
-    //Used a pinned cid from pinata to hold the images
-    const mintableContractBaseTokenURI = "https://gateway.pinata.cloud/ipfs/";
-    const tokenUri = "QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
+    //Using a pinned cid from pinata to hold the images
+    //const mintableContractBaseTokenURI = "https://gateway.pinata.cloud/ipfs/";
+    //const tokenUri = "QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
     //const completeTokenUri = "https://gateway.pinata.cloud/ipfs/QmUY3UPGpnjLsiNiwASjcepjJN2z98kjkzvbZW9V5QGJeN/";
     
     let amountOfNft = 10;
@@ -29,6 +30,7 @@ contract('TestERC721Mintable', accounts => {
                                                             );
 
             // TODO: mint multiple tokens
+            //There is no additional tokenUri. Therefore, sending it empty
             for (var i = 1; i <= amountOfNft; i++) {
                 await this.contract._mint(account_one, i, tokenUri, {from: account_one});
             }
@@ -49,8 +51,8 @@ contract('TestERC721Mintable', accounts => {
         // token uri should be complete i.e: https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/1
         it('should return token uri', async function () { 
             let tokenIdToTest = 1;
-            let uri = await this.contract.getTokenURI.call(tokenIdToTest);
-            let correctUri = mintableContractBaseTokenURI + tokenUri + "1"; //0 for the item in array equivalent from id 1
+            let uri = await this.contract.tokenURI.call(tokenIdToTest);
+            let correctUri = mintableContractBaseTokenURI + tokenUri + tokenIdToTest; //0 for the item in array equivalent from id 1
             //let correctUri = "https://drive.google.com/uc?id=1buU9Sx5SMa2xBKyYLwWkT9Cj9SYaUM3f";
 
             assert.equal(uri == correctUri, true, "The urls does not match. uri: " + uri + " ; correctUri: " + correctUri);
@@ -73,35 +75,39 @@ contract('TestERC721Mintable', accounts => {
         });
     });
 
-    // describe('have ownership properties', function () {
-    //     beforeEach(async function () { 
-    //         this.contract = await ERC721MintableComplete.new(
-    //             mintableContractName,
-    //             mintableContractSymbol,
-    //             mintableContractBaseTokenURI,
-    //             {from: account_one}
-    //         );
-    //     })
+    describe('have ownership properties', function () {
+        beforeEach(async function () { 
+            let VerifierContract = await Verifier.new({from: account_one});
+            this.contract = await ERC721MintableComplete.new(
+                                                            mintableContractName,
+                                                            mintableContractSymbol,
+                                                            mintableContractBaseTokenURI,
+                                                            VerifierContract.address,
+                                                            {from: account_one}
+                                                            );
+        })
 
-    //     it('should fail when minting when address is not contract owner', async function () {
-    //         let tokenId = 0;
+        it('should fail when minting when address is not contract owner', async function () {
+            let tokenId = 0;
 
-    //         try {
-    //             await this.contract._mint(account_two, nftInfoToFail[tokenId].id, tokenUri + i, {from: account_two});
-    //         } catch (error) { 
+            try {
 
-    //         }
+                await this.contract._mint(account_one, tokenId, tokenUri, {from: account_two});
 
-    //         let checkIfMinted = await this.contract.checkIfTokenExists.call(tokenId);
+            } catch (error) { 
 
-    //         assert.equal(checkIfMinted == true, false, "Only the contract owner should be able to mint. Insted it returned " + checkIfMinted + " for a token from the address " + account_two);
-    //     })
+            }
 
-    //     it('should return contract owner', async function () { 
-    //         let contractOwner = await this.contract.getOwner.call();
+            let checkIfMinted = await this.contract.checkIfTokenExists.call(tokenId, {from: account_one});
 
-    //         assert.equal(contractOwner == account_one, true, "The contract owner is different from the first address. It returned: " + contractOwner);
-    //     })
+            assert.equal(checkIfMinted == true, false, "Only the contract owner should be able to mint. Insted it returned " + checkIfMinted + " for a token from the address " + account_two);
+        })
 
-    // });
+        it('should return contract owner', async function () { 
+            let contractOwner = await this.contract.getOwner.call();
+
+            assert.equal(contractOwner == account_one, true, "The contract owner is different from the first address. It returned: " + contractOwner);
+        })
+
+    });
 })

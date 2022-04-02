@@ -1,29 +1,15 @@
 import MintableContract from '../eth-contracts/build/contracts/SolnSquareVerifier.json';
 import VerifierContract from '../eth-contracts/build/contracts/Verifier.json';
-//import flightSuretyData from '../../build/contracts/flightSuretyData.json';
 import Config from './config.json';
 import Web3 from "web3";
-
-//const Web3 = require("web3");
-//import Web3 from '/node_modules/web3/lib/index.js';
-//import Web3 from 'https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js';
-//<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 
 export default class Contract {
 
     constructor(network, callback) {
         let config = Config[network];
-        // this.web3 = new Web3(new Web3.providers.HttpProvider(config.url));
         this.web3 = new Web3(Web3.givenProvider);
         this.mintableContract = new this.web3.eth.Contract(MintableContract.abi, config.mintableAddress);
         this.verifierContract = new this.web3.eth.Contract(VerifierContract.abi, config.verifierAddress);
-        //this.flightSuretyApp = new this.web3.eth.Contract(MintableContract.abi, "0x1f8A40FCfe429c5FA6dcF96EbB907a09ec196918");
-        //this.flightSuretyData = new this.web3.eth.Contract(flightSuretyData.abi, config.dataAddress);
-        //this.initialize(callback);
-        // this.owner = null;
-        // this.airlines = [];
-        // this.passengers = [];
-        // this.accounts = []
     }
 
     initialize(callback) {
@@ -35,6 +21,7 @@ export default class Contract {
         });
     }
 
+    //Send Add Solution to submit a NEW solution
     verifyProof(proofA, proofB, proofC, inputs, accountOCheck, tokenToCheck, callback){
         let self = this;
         let payload = {
@@ -45,17 +32,15 @@ export default class Contract {
             tokenId: tokenToCheck,
             solAccount: accountOCheck
         }
-        console.log(payload);
+        console.log("addSolution", payload);
         self.mintableContract.methods
             .addSolution(payload.proof_a, payload.proof_b, payload.proof_c, payload.proof_inputs, payload.solAccount, payload.tokenId)
-            .send({from: payload.solAccount}, (error, result) => {
+            .send({from: payload.solAccount, gas: 3000000}, (error, result) => {
                 callback(error, result);
             });
-        // self.mintableContract.methods
-        //     .addSolution(payload.proof_a, payload.proof_b, payload.proof_c, payload.proof_inputs, payload.solAccount, payload.tokenId)
-        //     .call({from: payload.solAccount}, callback);
     }
 
+    //call hasSolution to get info if Solution with a proof was already "solved"
     proofHasSolution(proofA, proofB, proofC, inputs, accountOCheck, callback){
         let self = this;
         let payload = {
@@ -65,12 +50,13 @@ export default class Contract {
             proof_c: proofC,
             proof_inputs: inputs
         }
-        console.log(payload);
+
         self.mintableContract.methods
             .hasSolution(payload.proof_a, payload.proof_b, payload.proof_c, payload.proof_inputs)
             .call({from: accountOCheck}, callback);
     }
-
+    
+    //call getSolutionInfo to retrieve solution information about an specific proof
     getSolutionInfo(proofA, proofB, proofC, inputs, accountOCheck, callback){
         let self = this;
         let payload = {
@@ -80,38 +66,80 @@ export default class Contract {
             proof_c: proofC,
             proof_inputs: inputs
         }
-        console.log(payload);
         self.mintableContract.methods
             .getSolutionInfo(payload.proof_a, payload.proof_b, payload.proof_c, payload.proof_inputs)
             .call({from: accountOCheck}, callback);
     }
 
-    // isOperational(callback) {
-    //    let self = this;
-    //    self.flightSuretyApp.methods
-    //         .isOperational()
-    //         .call({ from: self.owner}, callback);
-    // }
+    //send mint in Solsquare that require a zSnark solution to work
+    mint(toAddress, tokenId, tokenUri, callback){
+        let self = this;
+        let payload = {
+            mintToAddress: toAddress,
+            mintTokenId: tokenId,
+            mintTokenUri: tokenUri
+        }
+        self.mintableContract.methods
+            .mint(payload.mintToAddress, payload.mintTokenId, payload.mintTokenUri)
+            .send({from: payload.mintToAddress, gas: 3000000}, (error, result) => {
+                callback(error, result);
+            });
+    } 
 
-    // getAccounts(){
-    //     return(this.accounts);
-    // }
+    //Mint without proof
+    _mint(toAddress, tokenId, callback){
+        let self = this;
+        let payload = {
+            mintToAddress: toAddress,
+            mintTokenId: tokenId,
+            mintTokenUri: ""
+        }
+        self.mintableContract.methods
+            ._mint(payload.mintToAddress, payload.mintTokenId, payload.mintTokenUri)
+            .send({from: payload.mintToAddress, gas: 3000000}, (error, result) => {
+                callback(error, result);
+            });
+    } 
+    
+    //Debug
+    getTokenURI(tokenId, senderAccont, callback){
+        let self = this;
+        let payload = {
+            mintedTokenId: tokenId,
+            sender: senderAccont
+        }
+        self.mintableContract.methods
+            .tokenURI(payload.mintedTokenId)
+            .call({from: payload.sender}, callback);
+    } 
+    getbaseTokenURI(senderAccont, callback){
+        let self = this;
+        let payload = {
+            sender: senderAccont
+        }
+        console.log("getbaseTokenURI", payload);
+        self.mintableContract.methods
+            .baseTokenURI()
+            .call({from: payload.sender}, callback);
+    } 
 
-    // /********************************************************************************************/
-    // /*                                       INSURANCE                                           */
-    // /********************************************************************************************/
-    // buyInsurance(buyer, flightKey, insuranceValue, callback) {
-    //     let self = this;
-    //     let payload = {
-    //         flightUniqueKey: flightKey,
-    //         valueToSend: insuranceValue,
-    //         buyerAddress: buyer
-    //     }
-    //     self.flightSuretyApp.methods
-    //         .buyInsurance(payload.flightUniqueKey)
-    //         .send({from: payload.buyerAddress, value: self.web3.utils.toWei(payload.valueToSend.toString(), "ether"), gas: 3000000}, (error, result) => {
-    //             callback(error, payload);
-    //         });
-    //     //other owner to send in From -> this.accounts[8]
-    // }
+    getTokenName(senderAccont, callback){
+        let self = this;
+        let payload = {
+            sender: senderAccont
+        }
+        self.mintableContract.methods
+            .name()
+            .call({from: payload.sender}, callback);
+    } 
+
+    getTokenSymbol(senderAccont, callback){
+        let self = this;
+        let payload = {
+            sender: senderAccont
+        }
+        self.mintableContract.methods
+            .symbol()
+            .call({from: payload.sender}, callback);
+    } 
 }

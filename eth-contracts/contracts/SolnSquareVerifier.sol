@@ -119,7 +119,7 @@ contract SolnSquareVerifier is ERC721MintableComplete {
     // TODO Create a function to mint new NFT only after the solution has been verified
     //  - make sure the solution is unique (has not been used before)
     //  - make sure you handle metadata as well as tokenSuplly
-    function mint (address to, uint256 tokenId) public {
+    function mint (address to, uint256 tokenId, string memory tokenUri) public {
         
         //check if passed through verifyTx and if can be minted
         bytes32 solutionKey = solutionsKeys[tokenId].key;
@@ -128,7 +128,7 @@ contract SolnSquareVerifier is ERC721MintableComplete {
         require(to == solutions[solutionKey].solutionAddress, "Failed. The user addres used to mint is different from the validation owner addresses");
         
         solutions[solutionKey].isMinted = true;
-        super._mint(to, tokenId);
+        super._mint(to, tokenId, tokenUri);
     }
 
 }
