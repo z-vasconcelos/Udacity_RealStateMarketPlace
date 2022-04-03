@@ -27,8 +27,6 @@ Docker instalation [Link](hhttps://docs.docker.com/install/)
 docker run -v /path to your project folder:/home/zokrates/code -ti zokrates/zokrates /bin/bash
 ```
 
-docker run -v C:/Users/zeh_1/Documents/Udacity/P07/RealStateMarketplace/zokrates/home/zokrates/code/square:/home/zokrates/code -ti zokrates/zokrates /bin/bash
-
 * cd to folder -> code -> square
 * You can use `ls` to check if you are in the right folder. It should outuput the file `square.code`
 
